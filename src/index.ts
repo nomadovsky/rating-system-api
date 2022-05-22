@@ -3,11 +3,17 @@ import express from "express";
 import mongoose from "mongoose";
 
 import productRoutes from "./routes/product";
+import userRoutes from "./routes/user";
+import loginRoutes from "./routes/login";
+import registerRoutes from "./routes/register";
 
 const app = express();
 app.use(express.json());
 
 app.use("/product", productRoutes);
+app.use("/user", userRoutes);
+app.use("/login", loginRoutes);
+app.use("/register", registerRoutes);
 
 mongoose
   .connect(

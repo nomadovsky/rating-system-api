@@ -1,11 +1,11 @@
-import { Review } from "./review";
-import { Schema, model } from "mongoose";
-interface IProduct {
+import { IReview } from "./review";
+import mongoose, { Schema, model } from "mongoose";
+export interface IProduct {
   productName: string;
   description: string;
   price: number;
   rating: number;
-  reviews: Review[];
+  reviews: IReview[];
 }
 
 const productSchema = new Schema<IProduct>({
@@ -13,7 +13,7 @@ const productSchema = new Schema<IProduct>({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   rating: { type: Number, required: true },
-  reviews: { type: [], required: true },
+  reviews: [{ type: mongoose.Types.ObjectId, required: false, ref: "Review" }],
 });
 
 export const Product = model<IProduct>("Product", productSchema);
