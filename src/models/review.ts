@@ -10,11 +10,16 @@ export interface IReview {
   review?: string;
 }
 
-const reviewSchema = new Schema<IReview>({
-  user: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
-  product: { type: mongoose.Types.ObjectId, required: true, ref: "Product" },
-  rating: { type: Number, required: true },
-  review: { type: String, required: false },
-});
+const reviewSchema = new Schema<IReview>(
+  {
+    user: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+    product: { type: mongoose.Types.ObjectId, required: true, ref: "Product" },
+    rating: { type: Number, required: true },
+    review: { type: String, required: false },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const Review = model<IReview>("Review", reviewSchema);

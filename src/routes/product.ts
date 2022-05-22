@@ -7,7 +7,7 @@ router.post("/add", createProduct);
 // router.get("/:productId", getProduct);
 // router.get("/all", getAllProducts);
 // router.delete("/:productId", deleteProduct);
-// router.put("/:productId", changeProduct);
+// router.put("/:productId", editProduct);
 
 // router.post("/:productId/addReview", createReview);
 // router.get("/:productId/reviews", getAllReviews);

@@ -8,12 +8,19 @@ export interface IProduct {
   reviews: IReview[];
 }
 
-const productSchema = new Schema<IProduct>({
-  productName: { type: String, required: true },
-  description: { type: String, required: true },
-  price: { type: Number, required: true },
-  rating: { type: Number, required: true },
-  reviews: [{ type: mongoose.Types.ObjectId, required: false, ref: "Review" }],
-});
+const productSchema = new Schema<IProduct>(
+  {
+    productName: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    rating: { type: Number, required: true },
+    reviews: [
+      { type: mongoose.Types.ObjectId, required: false, ref: "Review" },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const Product = model<IProduct>("Product", productSchema);
