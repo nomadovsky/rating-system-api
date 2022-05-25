@@ -1,6 +1,10 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user";
+import { Product } from "../models/product";
+import { Review } from "../models/review";
+
+import { RequestType } from "./auth";
 
 export const createUser: RequestHandler = async (req, res, next) => {
   const { name, mail, password } = req.body;
@@ -43,4 +47,43 @@ export const loginUser: RequestHandler = async (req, res, next) => {
   else {
     res.status(401).json("Incorrect mail or password");
   }
+};
+
+export const buyProduct: RequestHandler = async (
+  req: RequestType,
+  res,
+  next
+) => {
+  const productId = req.params.productID;
+
+  const product = await Product.findById(productId);
+  if (product) {
+    req.user.products.push(product);
+    req.user.save();
+    res.status(200).json("Product has bought");
+  } else res.status(404).json("Product not found");
+};
+
+export const getUserProducts: RequestHandler = async (
+  req: RequestType,
+  res,
+  next
+) => {
+  const products = await Product.find({ _id: req.user.products });
+  console.log(products);
+  if (products.length !== 0) {
+    res.status(200).json(products);
+  } else res.status(404).json("Products not found");
+};
+
+export const getUserReviews: RequestHandler = async (
+  req: RequestType,
+  res,
+  next
+) => {
+  const reviews = await Review.find({ user: req.user._id });
+  console.log(reviews);
+  if (reviews.length !== 0) {
+    res.status(200).json(reviews);
+  } else res.status(404).json("Reviews not found");
 };

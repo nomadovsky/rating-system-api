@@ -11,9 +11,9 @@ const app = express();
 app.use(express.json());
 
 app.use("/product", productRoutes);
-app.use("/user", userRoutes);
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
+app.use("/user", userRoutes);
 
 mongoose
   .connect(
