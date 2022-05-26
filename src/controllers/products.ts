@@ -75,14 +75,14 @@ export const createReview: RequestHandler = async (
   const notRieviewed = "Not commented";
   const comment = reviewText ? reviewText : notRieviewed;
 
-  const product = await Product.findById(req.params.productId);
-
   try {
+    const product = await Product.findById(req.params.productId);
     if (!product) return res.status(404).json("Product not found");
 
-    const isBought = req.user.products.find(
-      (p: any) => p === req.params.productId
+    const isBought = req.user.products.some(
+      (prod: any) => prod.toString() === req.params.productId.toString()
     );
+
     if (!isBought)
       return res.status(400).json("You cannot review this product");
 
@@ -167,3 +167,39 @@ export const editReview: RequestHandler = async (req, res, next) => {
     res.status(404).json("Review not found");
   }
 };
+
+export const getLastFiveProducts: RequestHandler = async (req, res, next) => {
+  try {
+    const lastFiveProducts = await Product.find({})
+      .limit(5)
+      .sort({ createdAt: "desc" });
+    res.status(200).json(lastFiveProducts);
+  } catch (error) {
+    res.status(500).json("Cannot list products");
+  }
+};
+export const getLastFiveReviews: RequestHandler = async (req, res, next) => {
+  try {
+    const lastFiveReviews = await Review.find({})
+      .limit(5)
+      .sort({ createdAt: "desc" });
+    res.status(200).json(lastFiveReviews);
+  } catch (error) {
+    res.status(500).json("Cannot list Reviews");
+  }
+};
+
+export const getRating: RequestHandler = async (req, res, next) => {
+  const product = await Product.findById(req.params.productId);
+
+  const allReviews = await Review.find({ product: req.params.productId });
+  const reviewsSum = allReviews.reduce(
+    (prevRev, rev) => prevRev + Number(rev.rating),
+    0
+  );
+  const allReviewsNumber = product.reviews.length;
+
+  res.send(200).json{}
+};
+
+// getLastFiveProducts

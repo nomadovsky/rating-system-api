@@ -1,3 +1,11 @@
+/*
+5 ostatnich recenzji
+5 ostatnio dodanhych produktów
+
+logout
+
+*/
+
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
