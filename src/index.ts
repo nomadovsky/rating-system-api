@@ -1,11 +1,3 @@
-/*
-5 ostatnich recenzji
-5 ostatnio dodanhych produktów
-
-logout
-
-*/
-
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
@@ -14,12 +6,14 @@ import productRoutes from "./routes/product";
 import userRoutes from "./routes/user";
 import loginRoutes from "./routes/login";
 import registerRoutes from "./routes/register";
+import logoutRoutes from "./routes/logout";
 
 const app = express();
 app.use(express.json());
 
 app.use("/product", productRoutes);
 app.use("/login", loginRoutes);
+app.use("/logout", logoutRoutes);
 app.use("/register", registerRoutes);
 app.use("/user", userRoutes);
 

@@ -115,8 +115,6 @@ export const createReview: RequestHandler = async (
         0
       );
       const allReviewsNumber = product.reviews.length;
-      console.log(`reviews sum: ${reviewsSum}`);
-      console.log(`reviews number: ${allReviewsNumber}`);
       product.rating = (reviewsSum / allReviewsNumber).toFixed(1);
       await product.save();
       await req.user.save();
@@ -191,15 +189,16 @@ export const getLastFiveReviews: RequestHandler = async (req, res, next) => {
 
 export const getRating: RequestHandler = async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
-
+  if (!product) return res.status(404).json("Product not found");
   const allReviews = await Review.find({ product: req.params.productId });
   const reviewsSum = allReviews.reduce(
     (prevRev, rev) => prevRev + Number(rev.rating),
     0
   );
   const allReviewsNumber = product.reviews.length;
+  const rate = reviewsSum / allReviewsNumber;
 
-  res.send(200).json{}
+  res.status(200).json({ rating: rate, reviewsNumber: allReviewsNumber });
 };
 
 // getLastFiveProducts

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user";
 import { Product } from "../models/product";
 import { Review } from "../models/review";
+import { Token } from "../models/token";
 
 import { RequestType } from "./auth";
 
@@ -36,16 +37,31 @@ export const loginUser: RequestHandler = async (req, res, next) => {
 
   const user = await User.findOne({ mail });
 
-  if (user && (await user.comparePassword(password)))
+  if (user && (await user.comparePassword(password))) {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "2h",
+    });
+    await Token.findOneAndUpdate(
+      { user: user._id },
+      { token: token },
+      { new: true, upsert: true }
+    );
     res.json({
       _id: user._id,
       name: user.name,
-      token: jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-        expiresIn: "15d",
-      }),
+      token,
     });
-  else {
+  } else {
     res.status(401).json("Incorrect mail or password");
+  }
+};
+
+export const logout: RequestHandler = async (req: RequestType, res, next) => {
+  try {
+    await Token.findOneAndDelete({ user: req.user });
+    res.status(200).json("User logged out");
+  } catch (error) {
+    res.status(401).json("Logout failed");
   }
 };
 
@@ -70,10 +86,9 @@ export const getUserProducts: RequestHandler = async (
   next
 ) => {
   const products = await Product.find({ _id: req.user.products });
-  console.log(products);
   if (products.length !== 0) {
-    res.status(200).json(products);
-  } else res.status(404).json("Products not found");
+    return res.status(200).json(products);
+  } else return res.status(404).json("Products not found");
 };
 
 export const getUserReviews: RequestHandler = async (

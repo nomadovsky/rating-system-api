@@ -12,6 +12,7 @@ import {
   editReview,
   getLastFiveProducts,
   getLastFiveReviews,
+  getRating
 } from "../controllers/products";
 import { authAdmin, authUser } from "../controllers/auth";
 
