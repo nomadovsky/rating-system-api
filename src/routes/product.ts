@@ -12,7 +12,7 @@ import {
   editReview,
   getLastFiveProducts,
   getLastFiveReviews,
-  getRating
+  getRating,
 } from "../controllers/products";
 import { authAdmin, authUser } from "../controllers/auth";
 
@@ -31,11 +31,7 @@ router.get("/:productId/reviews", getAllReviews);
 router.get("/reviews/last-five", getLastFiveReviews);
 
 router.get("/:productId/review/:reviewId", getReview);
-router.delete(
-  "/:productId/review/:reviewId",
-  authUser || authAdmin,
-  deleteReview
-);
-router.put("/:productId/review/:reviewId", authUser || authAdmin, editReview);
+router.delete("/:productId/review/:reviewId", authUser, deleteReview);
+router.put("/:productId/review/:reviewId", authUser, editReview);
 
 export default router;

@@ -6,6 +6,7 @@ import { Review } from "../models/review";
 import { Token } from "../models/token";
 
 import { RequestType } from "./auth";
+import { equal } from "assert";
 
 export const createUser: RequestHandler = async (req, res, next) => {
   const { name, mail, password } = req.body;
@@ -85,7 +86,11 @@ export const getUserProducts: RequestHandler = async (
   res,
   next
 ) => {
-  const products = await Product.find({ _id: req.user.products });
+  if (req.user._id.toString() !== req.params.userId && !req.user.isAdmin)
+    return res.status(403).json("You are not allowed to see products");
+  const user = await User.findById(req.params.userId);
+  if (!user) return res.status(404);
+  const products = await Product.find({ _id: user.products });
   if (products.length !== 0) {
     return res.status(200).json(products);
   } else return res.status(404).json("Products not found");
@@ -96,7 +101,11 @@ export const getUserReviews: RequestHandler = async (
   res,
   next
 ) => {
-  const reviews = await Review.find({ user: req.user._id });
+  if (req.user._id.toString() !== req.params.userId && !req.user.isAdmin)
+    return res.status(403).json("You are not allowed to see reviews");
+  const user = await User.findById(req.params.userId);
+  if (!user) return res.status(404);
+  const reviews = await Review.find({ user: user._id });
   console.log(reviews);
   if (reviews.length !== 0) {
     res.status(200).json(reviews);
